@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// Model gry oraz gracza
 struct Game {
     int size;
     int bestScore;
@@ -27,8 +28,10 @@ const string PLAYER = "O";
 const string WALL = "#";
 const string SCORE = "*";
 
+// Zmienna czy gra już sie zakonczyla
 bool isEnd = false;
 
+// Wyswietlenie w ramce podanego napisu
 void renderLabel(string title) {
     cout << (char)201 << string(title.length(), (char)205) << (char)187 << endl;
     cout << (char)186 << title << (char)186 << endl;
@@ -52,6 +55,8 @@ void renderMenu(vector<string> options, string title, int &selected) {
     }
 }
 
+
+// Zmiana wybranej opcji w menu
 void changeSelected(int key, int& selected, int menuOptionsLength) {
     if (key == 80 && selected < menuOptionsLength - 1) {
         selected += 1;
@@ -82,6 +87,7 @@ void options(Game& game) {
     }
 }
 
+// Wyczyszczenie wszystkich pol w ktorych jest gracz
 void clearPlayer(Game& game, Player& player) {
     isEnd = true;
     for (int y = 1; y < game.size + 1; y++) {
@@ -146,6 +152,7 @@ void createMap(Game& game, Player& player) {
     game.map = map;
 }
 
+// Tworzenie w losowych miejscach punktow
 void renderPoints(Game& game, Player& player) {
     int pointX{}, pointY{};
 
@@ -201,7 +208,7 @@ void movePlayer(Game& game, Player& player) {
             moveY = 0;
         }
 
-
+        // Zmiana pozycji gracza na podstawie kliknietych wyzej klawiszy
         int beginY = player.bodyCoords.back()[0];
         int beginX = player.bodyCoords.back()[1];
         if (game.map[beginY + moveY][beginX + moveX] == WALL || game.map[beginY + moveY][beginX + moveX] == PLAYER) {
@@ -226,6 +233,7 @@ void movePlayer(Game& game, Player& player) {
     }
 }
 
+// Pokazanie ilosci punktow po przegranej grze oraz najlepszy wynik
 bool endgame(Game& game, Player& player) {
     system("cls");
 
@@ -256,6 +264,7 @@ bool start(Game& game) {
     createMap(game, newPlayer);
     renderMap(game, newPlayer);
 
+    // Uzycie thread aby obie funkcjie dzialaly w tym samym momencie
     thread t_movePlayer(movePlayer, ref(game), ref(newPlayer));
     thread t_points(renderPoints, ref(game), ref(newPlayer));
 
